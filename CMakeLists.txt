@@ -24,7 +24,7 @@ add_library(
 )
 add_library(bav::qr ALIAS ${PROJECT_NAME})
 
-find_package(OpenCV CONFIG REQUIRED)
+find_package(OpenCV CONFIG REQUIRED PATHS C:/Users/ethan/Downloads/opencv-4.5.1/opencv-4.5.1/build)
 find_path(QRENCODE_INCLUDE_DIR NAMES qrencode.h)
 find_library(QRENCODE_LIBRARY_RELEASE qrencode)
 find_library(QRENCODE_LIBRARY_DEBUG qrencoded)

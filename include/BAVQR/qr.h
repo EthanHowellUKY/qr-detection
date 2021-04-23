@@ -8,6 +8,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
+#include <opencv2/highgui.hpp>
 #include <qrencode.h>
 #include <png.h>
 #include <string>
@@ -74,12 +75,14 @@ private:
     int m_margin = 1;
     int m_dpi = 72;
     int m_camera = 0; // Rear camera
-    int m_api_id = cv::CAP_FFMPEG;
+    int m_api_id = cv::CAP_ANY;
 
     std::string m_decoded;
     std::string m_toencode;
     std::string m_filename;
     bool        m_qr_isnull = true;
+
+    double m_delay = 31.25; // 32 fps
 };
 
 #endif // BAVQR_H

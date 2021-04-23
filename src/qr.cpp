@@ -99,9 +99,11 @@ void QR::read_qr()
     {
         while (true)
         {
-            cap.read(frame);
+            cap >> frame;
             m_decoded = decode_qr(frame);
+            cv::imshow("Live", frame);
             if (m_decoded != "") { break; }
+            if (cv::waitKey(m_delay) >= 0) { break; }
         }
     }
 }
