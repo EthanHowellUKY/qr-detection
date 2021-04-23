@@ -78,6 +78,34 @@ QR::~QR() { }
 // -------------------------------- // 
 //         PUBLIC FUNCTIONS         //
 // -------------------------------- //
+std::string QR::decode_qr(const cv::Mat &to_decode) { return m_decoder.detectAndDecode(to_decode); }
+std::string QR::decode_qr(const std::string &img)
+{
+    cv::Mat input_image = cv::imread(img);
+    return decode_qr(input_image);
+}
+
+void QR::read_qr()
+{
+    cv::Mat frame;
+    cv::VideoCapture cap;
+    cap.open(m_camera, m_api_id);
+    if (!cap.isOpened())
+    {
+        std::cout << "Unable to open camera" << '\n';
+        m_decoded = "-1";
+    }
+    else
+    {
+        while (true)
+        {
+            cap.read(frame);
+            m_decoded = decode_qr(frame);
+            if (m_decoded != "") { break; }
+        }
+    }
+}
+
 void QR::encode_qr(const std::string &to_encode)
 {
     m_qr = QRcode_encodeString(to_encode.c_str(), 4, QR_ECLEVEL_Q, QR_MODE_8, 1);
@@ -129,3 +157,10 @@ void QR::create_png(const std::string &file_name)
     // Close the PNG File
     close_png();
 }
+
+// ------------ GETTERS ----------- //
+std::string QR::to_encode() const { return m_toencode; }
+std::string QR::decoded_data() const { return m_decoded; }
+
+// ------------ SETTERS ----------- //
+void QR::set_camera(const int &camera_id) { m_camera = camera_id; }
