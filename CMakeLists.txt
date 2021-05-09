@@ -24,13 +24,18 @@ add_library(
 )
 add_library(bav::qr ALIAS ${PROJECT_NAME})
 
-find_package(OpenCV CONFIG REQUIRED PATHS C:/Users/ethan/Downloads/opencv-4.5.1/opencv-4.5.1/build)
+find_package(OpenCV CONFIG REQUIRED)
 find_path(QRENCODE_INCLUDE_DIR NAMES qrencode.h)
 find_library(QRENCODE_LIBRARY_RELEASE qrencode)
-find_library(QRENCODE_LIBRARY_DEBUG qrencoded)
+if (WIN32)
+    find_library(QRENCODE_LIBRARY_DEBUG qrencoded)
+elseif(UNIX)
+    find_library(QRENCODE_LIBRARY_DEBUG qrencode)
+endif()
 set(QRENCODE_LIBRARIES optimized ${QRENCODE_LIBRARY_RELEASE} debug ${QRENCODE_LIBRARY_DEBUG})
 
 find_package(PNG REQUIRED)
+#find_package(ZBAR REQUIRED)
 #find_package(libharu REQUIRED)
 
 target_include_directories( ${PROJECT_NAME}
@@ -43,4 +48,5 @@ target_link_libraries( ${PROJECT_NAME}
     PRIVATE ${OpenCV_LIBS}
     PRIVATE ${QRENCODE_LIBRARIES}
     PRIVATE ${PNG_LIBRARIES}
+    PRIVATE ${ZBAR_LIBRARIES} zbar
 )
