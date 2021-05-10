@@ -6,6 +6,13 @@ if (WIN32)
     set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
     set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
 elseif(UNIX)
+    if(APPLE)
+        set(VCPKG_DIR "$ENV{HOME}/vcpkg/installed/x86-osx")
+        set(VCPKG_TARGET_TRIPLET "x64-osx" CACHE STRING "")
+        set(CMAKE_TOOLCHAIN_FILE "$ENV{HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+        set(ZBAR_INCLUDE_DIR "/usr/local/Cellar/zbar/0.23.90/include")
+        set(ZBAR_LIB_DIR "/usr/local/Cellar/zbar/0.23.90/lib")
+    endif()
     set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu")
 endif(WIN32)
 
@@ -42,6 +49,11 @@ target_include_directories( ${PROJECT_NAME}
     PRIVATE ${QRENCODE_INCLUDE_DIR}
     PRIVATE ${PNG_INCLUDE_DIR}
     PUBLIC ${PROJECT_SOURCE_DIR}/include
+    PRIVATE ${ZBAR_INCLUDE_DIR}
+)
+
+target_link_directories( ${PROJECT_NAME}
+    PRIVATE ${ZBAR_LIB_DIR}
 )
 
 target_link_libraries( ${PROJECT_NAME}
