@@ -114,9 +114,18 @@ void QR::display(cv::Mat &im)
     // Number of points in the convex hull
     int n = hull.size();
 
-    for (int j = 0; j < n; j++)
+    if (n > 0)
     {
-        cv::line(im, hull[j], hull[(j + 1) % n], cv::Scalar(255, 0, 0), 3);
+        for (int j = 0; j < n; j++)
+        {
+            cv::line(im, hull[j], hull[(j + 1) % n], cv::Scalar(255, 0, 0), 3);
+        }
+        double x_c = ( (hull[2].x - hull[0].x) / 2 ) + hull[0].x;
+        double y_c = ( (hull[2].y - hull[0].y) / 2 ) + hull[0].y;
+        cv::Point center(x_c, y_c);
+        m_distance_to_center = cv::Point(pow(x_c - m_center.x, 2), pow(y_c - m_center.y, 2));
+        cv::line(im, m_center, center, cv::Scalar(0, 0, 255), 3);
+        std::cout << "Distance to center: " << m_distance_to_center << '\n';
     }
 
     // Display results
@@ -146,7 +155,7 @@ std::string QR::decode_qr(const std::string &img)
     return decode_qr(input_image);
 }
 
-void QR::read_qr()
+void QR::read_qr(const bool &exit_on_detect)
 {
     cv::Mat frame;
     cv::VideoCapture cap;
@@ -162,10 +171,11 @@ void QR::read_qr()
         while (true)
         {
             cap >> frame;
+            m_center = cv::Point(frame.cols/2, frame.rows/2);
             decode(frame);
             display(frame);
             m_decoded.location.clear();
-            if (m_decoded.data.length()) { break; }
+            if (m_decoded.data.length() && exit_on_detect) { break; }
             if (cv::waitKey(m_delay) >= 0) { break; }
         }
     }

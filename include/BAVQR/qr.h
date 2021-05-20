@@ -37,7 +37,7 @@ public:
 	// -------------------------------- //
     std::string decode_qr(cv::Mat &to_decode);
     std::string decode_qr(const std::string &img);
-    void read_qr();
+    void read_qr(const bool &exit_on_detect);
     void encode_qr(const std::string &to_encode);
     void create_png(const std::string &file_name);
 
@@ -78,6 +78,8 @@ private:
     QRcode *m_qr;
     cv::QRCodeDetector m_decoder;
     zbar::ImageScanner m_scanner;
+    cv::Point m_center;
+    cv::Point m_distance_to_center;
 
     // MISC Members
     unsigned char *m_row, *m_q, *m_p;
