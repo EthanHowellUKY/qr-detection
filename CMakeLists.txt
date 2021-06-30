@@ -1,5 +1,5 @@
 
-project(BAVQR)
+project(QR)
 
 if (WIN32)
     set(VCPKG_DIR "C:/vcpkg/installed/x64-windows")
@@ -29,7 +29,7 @@ add_library(
     ${SRC_FILES}
     ${HEADER_FILES}
 )
-add_library(bav::qr ALIAS ${PROJECT_NAME})
+add_library(echo::qr ALIAS ${PROJECT_NAME})
 
 find_package(OpenCV CONFIG REQUIRED)
 find_path(QRENCODE_INCLUDE_DIR NAMES qrencode.h)
@@ -42,8 +42,6 @@ endif()
 set(QRENCODE_LIBRARIES optimized ${QRENCODE_LIBRARY_RELEASE} debug ${QRENCODE_LIBRARY_DEBUG})
 
 find_package(PNG REQUIRED)
-#find_package(ZBAR REQUIRED)
-#find_package(libharu REQUIRED)
 
 target_include_directories( ${PROJECT_NAME}
     PRIVATE ${QRENCODE_INCLUDE_DIR}

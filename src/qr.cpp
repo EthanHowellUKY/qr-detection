@@ -1,5 +1,5 @@
 
-#include "BAVQR/qr.h"
+#include "QR/qr.h"
 
 // -------------------------------- //
 //        PRIVATE FUNCTIONS         //

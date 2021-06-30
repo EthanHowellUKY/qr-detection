@@ -1,5 +1,5 @@
 
-- [BAV QR Code Module](#bav-qr-code-module)
+- [QR Code Module](#qr-code-module)
 - [Required Packages](#required-packages)
 - [Building the Project](#building-the-project)
 - [Example](#example)
@@ -7,25 +7,27 @@
   - [Example 2](#example-2)
   - [Example 3](#example-3)
 
-# BAV QR Code Module
+# QR Code Module
 
-The intent of this module is to provide BAV users a generic library to handle generating, reading, and writing QR codes. This module currently has the following capabilities.
+The intent of this module is to provide users a generic library to handle generating, reading, and writing QR codes. This module currently has the following capabilities.
 
 - Generate a QR code from a string.
 - Save a QR code to a PNG file.
 - Read a single QR code from an image provided via file path.
 - Open the device camera, recognize a QR code and decode it.
+- Locate a QR Code and determine the distance from the center of the screen, to the center of the QR Code.
 
 # Required Packages
 
-A few packages are needed to be able to compile the tracking program. These packages are readily available using [vcpkg](https://github.com/microsoft/vcpkg) provided by Microsoft. The installation of `vcpkg` should reside in the root directory, `C:\`. The following commands will install the needed packages.
+A few packages are needed to be able to compile the tracking program. These packages are readily available using [vcpkg](https://github.com/microsoft/vcpkg) provided by Microsoft. The installation of `vcpkg` should reside in the root directory. The following commands will install the needed packages.
 
-```powershell
-PS C:\Users> vcpkg install libpng:x64-windows
-PS C:\Users> vcpkg install libqrencode:x64-windows
+```shell
+$ vcpkg install --triplet=x64 libpng
+$ vcpkg install --triplet=x64 libqrencode
+$ vcpkg install --triplet=x64 openvc4
 ```
 
-Additionally, you will need [OpenCV4](https://opencv.org/releases/) to be able to decode the QR Codes generated. For this you will need to build from source to get the drivers necessary for OpenCV to access the device cameras.
+Additionally, you will need [ZBar](http://zbar.sourceforge.net) to be able to decode and accurately locate the QR Codes generated.
 
 # Building the Project
 
@@ -34,10 +36,10 @@ This project is configured to build as a library and will produce no executable.
 ```txt
 ./
 +-- libs/
-|   +-- BAVQR/
+|   +-- QR/
 |   |   +-- .gitignore
 |   |   +-- include/
-|   |   |   +-- BAVQR/
+|   |   |   +-- QR/
 |   |   |   |   +-- qr.h
 |   |   +-- src/
 |   |   |   +-- qr.cpp
@@ -54,7 +56,7 @@ To follow this structure, add these lines to  `./CMakeLists.txt`
 ...
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-add_subdirectory(libs/BAVQR)
+add_subdirectory(libs/QR)
 add_subdirectory(src)
 ...
 ```
@@ -77,7 +79,7 @@ file(GLOB_RECURSE SRC_FILES *.cpp)
 
 ...
 target_link_libraries(${CMAKE_PROJECT_NAME}
-    bav::qr
+    echo::qr
     ${OpenCV_LIBS}
     ${QRENCODE_LIBRARIES}
     ${PNG_LIBRARIES}
@@ -94,7 +96,7 @@ The following example shows how the module can be used to encode a string into a
 ```cpp
 #include <iostream>
 #include <string>
-#include "BAVQR/qr.h
+#include "QR/qr.h"
 
 int main(int argc, char *argv[])
 {
@@ -115,7 +117,7 @@ The following example shows how the module can be used to read an image file con
 ```cpp
 #include <iostream>
 #include <string>
-#include "BAVQR/qr.h
+#include "QR/qr.h"
 
 int main(int argc, char *argv[])
 {
@@ -135,12 +137,12 @@ The following example shows how the module can be used to access the device came
 ```cpp
 #include <iostream>
 #include <string>
-#include "BAVQR/qr.h
+#include "QR/qr.h"
 
 int main(int argc, char *argv[])
 {
     QR qr;
-    qr.read_qr();
+    qr.read_qr(true); // Set true to exit on detect
     std::cout << qr.decoded_data() << '\n';
 
     return 0;
